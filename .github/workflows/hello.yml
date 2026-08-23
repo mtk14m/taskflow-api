@@ -2,12 +2,30 @@ name: helloflow
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+    paths-ignore: ["**.md"]
+
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+  schedule:
+    - cron: "0 8 * * 1"
+
+  workflow_dispatch:
+    inputs:
+      prenom:
+        description: "Ton prénom"
+        required: true
 
 jobs:
   greet:
     runs-on: ubuntu-latest
     steps:
-      - name: say-hello
-        run: echo "Bonjour depuis Github Actions !"
+      - name: hello-with-firstname
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "Bonjour ${{ github.event.inputs.prenom }}"
+
+      - name: hello-from-github-actions
+        if: github.event_name != 'workflow_dispatch'
+        run: echo "Bonjour depuis GitHub Actions !"

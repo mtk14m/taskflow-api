@@ -1,0 +1,38 @@
+name: pipelineflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      sha_court: ${{ steps.sha.outputs.sha_court }}
+    steps:
+      - name: Afficher le sha court
+        id: sha
+        run: |
+          echo "SHA court:${GITHUB_SHA::7}"
+          echo "sha_court=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tests
+        run: |
+          echo "Tests Ok pour le commit ${{ needs.build.outputs.sha_court }}"
+
+  notify:
+    needs: [build, test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pipeline réussi
+        if: needs.test.result == 'success'
+        run: echo "Pipeline réussi"
+
+      - name: Pipeline échoué
+        if: needs.test.result == 'failure'
+        run: echo "Pipeline échoué"

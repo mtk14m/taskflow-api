@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env:
+  APP_NAME: taskflow-api
+  PYTHON_VERSION: "3.12"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,6 +18,8 @@ jobs:
       - name: Afficher le sha court
         id: sha
         run: |
+          echo "APP NAME: ${APP_NAME}"
+          echo "PYTHON VERSION : ${PYTHON_VERSION}"
           echo "SHA court:${GITHUB_SHA::7}"
           echo "sha_court=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
   test:
@@ -21,7 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Tests
+        env:
+          API_KEY: ${{ secrets.API_KEY}}
         run: |
+          if [ -n "$API_KEY" ]; then echo "API Key disponible: ***"; fi
           echo "Tests Ok pour le commit ${{ needs.build.outputs.sha_court }}"
 
   notify:
@@ -36,3 +45,13 @@ jobs:
       - name: Pipeline échoué
         if: needs.test.result == 'failure'
         run: echo "Pipeline échoué"
+
+  deploy-staging:
+    environment: staging
+    needs: notify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Déployer en staging
+
+        run: |
+          echo "Déploiement vers ${{ secrets.STAGING_URL }}"

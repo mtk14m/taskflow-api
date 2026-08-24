@@ -1,5 +1,5 @@
 # Stage 1: installation des dépendances
-FROM python:3.12-slim as builder
+FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ RUN python -m venv /opt/venv \
   && /opt/venv/bin/pip install .
 
 #Stage 2: image finale 
-FROM python:3.12-slim as runtime
+FROM python:3.12-slim AS runtime
 
 WORKDIR /app
 

@@ -9,7 +9,7 @@ inputs:
   install-deps:
     description: dependancies install toogle
     required: false
-    default: true
+    default: "true"
 
 runs:
   using: composite
@@ -18,6 +18,6 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    - if: inputs.install-deps == true
+    - if: inputs.install-deps == 'true'
       run: pip install ".[dev]"
       shell: bash

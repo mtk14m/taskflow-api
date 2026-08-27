@@ -103,4 +103,4 @@ jobs:
     uses: ./.github/workflows/notify.yml
     with:
       status: success
-      job-name: CI Pipeline
+      job_name: CI Pipeline

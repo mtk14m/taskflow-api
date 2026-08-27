@@ -1,0 +1,15 @@
+on:
+  workflow_call:
+    inputs:
+      status:
+        type: string
+        required: true
+      job-name: 
+        type: string
+        required: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ inputs.job-name }} Status : ${{ inputs.status }}"

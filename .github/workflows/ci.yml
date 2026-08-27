@@ -12,11 +12,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Setup python env
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: "3.12"
 
@@ -39,16 +36,10 @@ jobs:
         python-version: ["3.11", "3.12", "3.13"]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup python
-        uses: actions/setup-python@v5
+      - name: Setup python env
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: pip install ".[dev]"
 
       - name: Run units tests
         run: pytest tests/ -v
@@ -106,3 +97,10 @@ jobs:
           image-ref: taskflow-api:ci
           format: table
           exit-code: 0
+
+  report:
+    needs: build-and-scan
+    uses: ./.github/workflows/notify.yml
+    with:
+      status: success
+      job-name: CI Pipeline

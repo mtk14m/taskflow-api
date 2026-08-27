@@ -1,0 +1,24 @@
+name: Setup Python Environment
+description: Checkout + Python + deps
+
+inputs:
+  python-version:
+    description: Python version
+    required: false
+    default: "3.12"
+  install-deps:
+    description: dependancies install toogle
+    required: false
+    default: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - if: inputs.install-deps == true
+      run: pip install ".[dev]"
+      shell: bash
